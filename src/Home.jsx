@@ -77,7 +77,7 @@ function List({ items }) {
                         `https://backend-url-shortner.onrender.com/${e.shorturl}`
                       )
                     }
-                    href="#"
+                    href="/home"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
