@@ -1,6 +1,7 @@
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
-import { useNavigate,NavLink } from "react-router-dom";
+import { useNavigate, NavLink, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import * as React from "react";
@@ -8,8 +9,7 @@ import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 
 const formValidationSchema = yup.object({
-  username: yup.string().required().min(5),
-  password: yup.string().required().min(8),
+  password:yup.string().required().min(8),
   repassword: yup
     .string()
     .required()
@@ -20,8 +20,10 @@ const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-export function Signup() {
+export function Forgot_Password() {
   const [open, setOpen] = React.useState(false);
+  const navigate = useNavigate();
+  const { id, token } = useParams();
   const handleClick = () => {
     setOpen(true);
   };
@@ -32,22 +34,40 @@ export function Signup() {
     setOpen(false);
   };
 
-  const navigate = useNavigate();
+  const userValid = async () => {
+    const result = await fetch(
+      `https://sample-login-node.vercel.app/forgotpassword/${id}/${token}`,
+      {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+    const data = await result.json();
+    if (data.status == 201) {
+      console.log("user valid");
+    } else {
+      navigate("/");
+    }
+  };
+  useEffect(() => {
+    userValid();
+  }, []);
   const { handleSubmit, handleChange, handleBlur, values, touched, errors } =
     useFormik({
       initialValues: {
-        username: "",
         password: "",
         repassword: "",
       },
       validationSchema: formValidationSchema,
       onSubmit: async (e) => {
-        const result = await fetch("https://sample-login-node.vercel.app/signup", {
+        console.log(e);
+        const result = await fetch(`https://sample-login-node.vercel.app/${id}/${token}`, {
           method: "POST",
           body: JSON.stringify(e),
           headers: { "Content-Type": "application/json" },
-        }).then((data) => data);
-        if (result.status == 201) {
+        });
+        const data = await result.json();
+        if (data.status == 201) {
           navigate("/");
         } else {
           handleClick();
@@ -56,24 +76,14 @@ export function Signup() {
     });
   return (
     <div style={{ padding: "80px 0" }}>
+      <div></div>
       <div className="login-box">
-        <p>Sign up</p>
+        <p>New Password</p>
         <form onSubmit={handleSubmit}>
-          <TextField
-            name="username"
-            onChange={handleChange}
-            onBlur={handleBlur}
-            value={values.username}
-            id="username"
-            label="Email Id"
-            variant="outlined"
-            size="small"
-          />
-          {touched.username && errors.username ? errors.username : null}
           <TextField
             autoComplete="on"
             id="password"
-            label="Password"
+            label="password"
             variant="outlined"
             size="small"
             type="password"
@@ -86,7 +96,7 @@ export function Signup() {
           <TextField
             autoComplete="on"
             id="repassword"
-            label="Confirm Password"
+            label="retype-password"
             variant="outlined"
             size="small"
             type="password"
@@ -97,11 +107,8 @@ export function Signup() {
           />
           {touched.repassword && errors.repassword ? errors.repassword : null}
           <Button variant="contained" type="submit">
-            Signup
+            Send
           </Button>
-          <div>
-          <p style={{ display: "inline-block" }}>Already have an account? <NavLink to="/">Sign In</NavLink></p>
-          </div>
         </form>
         <Snackbar open={open} anchorOrigin={{ vertical: "top", horizontal: "right" }} autoHideDuration={5000} onClose={handleClose}>
           <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
