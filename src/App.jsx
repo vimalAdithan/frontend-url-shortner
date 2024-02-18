@@ -12,13 +12,11 @@ function App() {
       <Route path="/" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
       <Route path="/reset" element={<Reset_Password />} />
-        <Route
-          path="/forgotpassword/:id/:token"
-          element={<Forgot_Password />}
-        />
+      <Route path="/forgotpassword/:id" element={<Forgot_Password />} />
       <Route path="/home" element={<Home />} />
     </Routes>
   );
 }
-
+// https://sample-login-node.vercel.app
+// https://backend-url-shortner.onrender.com
 export default App;

@@ -1,6 +1,6 @@
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
-import { useNavigate,NavLink } from "react-router-dom";
+import { useNavigate, NavLink } from "react-router-dom";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import * as React from "react";
@@ -42,11 +42,14 @@ export function Signup() {
       },
       validationSchema: formValidationSchema,
       onSubmit: async (e) => {
-        const result = await fetch("https://sample-login-node.vercel.app/signup", {
-          method: "POST",
-          body: JSON.stringify(e),
-          headers: { "Content-Type": "application/json" },
-        }).then((data) => data);
+        const result = await fetch(
+          "https://backend-url-shortner-kappa.vercel.app/signup",
+          {
+            method: "POST",
+            body: JSON.stringify(e),
+            headers: { "Content-Type": "application/json" },
+          }
+        ).then((data) => data);
         if (result.status == 201) {
           navigate("/");
         } else {
@@ -100,10 +103,17 @@ export function Signup() {
             Signup
           </Button>
           <div>
-          <p style={{ display: "inline-block" }}>Already have an account? <NavLink to="/">Sign In</NavLink></p>
+            <p style={{ display: "inline-block" }}>
+              Already have an account? <NavLink to="/">Sign In</NavLink>
+            </p>
           </div>
         </form>
-        <Snackbar open={open} anchorOrigin={{ vertical: "top", horizontal: "right" }} autoHideDuration={5000} onClose={handleClose}>
+        <Snackbar
+          open={open}
+          anchorOrigin={{ vertical: "top", horizontal: "right" }}
+          autoHideDuration={5000}
+          onClose={handleClose}
+        >
           <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
             User name is already exist!
           </Alert>

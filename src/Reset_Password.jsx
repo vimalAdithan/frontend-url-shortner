@@ -39,25 +39,33 @@ export function Reset_Password() {
       validationSchema: formValidationSchema,
       onSubmit: async (e) => {
         const result = await fetch(
-          "https://sample-login-node.vercel.app/passwordlink",
+          "https://backend-url-shortner-kappa.vercel.app/passwordlink",
           {
             method: "POST",
             body: JSON.stringify({
               username: e.userid,
-              link:"https://subtle-haupia-a559a9.netlify.app"
+              link: "https://subtle-haupia-a559a9.netlify.app",
             }),
             headers: { "Content-Type": "application/json" },
           }
-        ).then((data) => data);
-        if (result.status == 201) {
+        ).then((data) => data.json());
+        if (result.code === 200) {
           handleClick({
             severity: "success",
             content: "Reset link has sent to the EmailId",
           });
+          setTimeout(() => {
+            navigate("/");
+          }, 5000);
+        } else if (result.code === 400) {
+          handleClick({
+            severity: "error",
+            content: "EmailId does not exist. Please signup",
+          });
         } else {
           handleClick({
             severity: "error",
-            content: "EmailId does not exist",
+            content: "Somthing went wrong",
           });
         }
       },
@@ -83,6 +91,7 @@ export function Reset_Password() {
             Send
           </Button>
         </form>
+        <a onClick={() => navigate("/signup")}>Signup</a>
         <Snackbar
           anchorOrigin={{ vertical: "top", horizontal: "right" }}
           open={open}

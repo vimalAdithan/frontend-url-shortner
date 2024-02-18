@@ -1,6 +1,6 @@
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
-import { useNavigate, NavLink, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as yup from "yup";
@@ -9,7 +9,7 @@ import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 
 const formValidationSchema = yup.object({
-  password:yup.string().required().min(8),
+  password: yup.string().required().min(8),
   repassword: yup
     .string()
     .required()
@@ -23,7 +23,7 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 export function Forgot_Password() {
   const [open, setOpen] = React.useState(false);
   const navigate = useNavigate();
-  const { id, token } = useParams();
+  const { id } = useParams();
   const handleClick = () => {
     setOpen(true);
   };
@@ -35,17 +35,12 @@ export function Forgot_Password() {
   };
 
   const userValid = async () => {
-    const result = await fetch(
-      `https://sample-login-node.vercel.app/forgotpassword/${id}/${token}`,
-      {
-        method: "GET",
-        headers: { "Content-Type": "application/json" },
-      }
-    );
+    const result = await fetch(`https://backend-url-shortner-kappa.vercel.app/forgotpassword/${id}`, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    });
     const data = await result.json();
-    if (data.status == 201) {
-      console.log("user valid");
-    } else {
+    if (data.status !== 200) {
       navigate("/");
     }
   };
@@ -60,14 +55,15 @@ export function Forgot_Password() {
       },
       validationSchema: formValidationSchema,
       onSubmit: async (e) => {
-        console.log(e);
-        const result = await fetch(`https://sample-login-node.vercel.app/${id}/${token}`, {
-          method: "POST",
-          body: JSON.stringify(e),
-          headers: { "Content-Type": "application/json" },
-        });
-        const data = await result.json();
-        if (data.status == 201) {
+        const result = await fetch(
+          `https://backend-url-shortner-kappa.vercel.app/forgotpassword/${id}`,
+          {
+            method: "POST",
+            body: JSON.stringify(e),
+            headers: { "Content-Type": "application/json" },
+          }
+        );
+        if (result.status === 200) {
           navigate("/");
         } else {
           handleClick();
@@ -107,12 +103,17 @@ export function Forgot_Password() {
           />
           {touched.repassword && errors.repassword ? errors.repassword : null}
           <Button variant="contained" type="submit">
-            Send
+            Update Password
           </Button>
         </form>
-        <Snackbar open={open} anchorOrigin={{ vertical: "top", horizontal: "right" }} autoHideDuration={5000} onClose={handleClose}>
+        <Snackbar
+          open={open}
+          anchorOrigin={{ vertical: "top", horizontal: "right" }}
+          autoHideDuration={5000}
+          onClose={handleClose}
+        >
           <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
-            User name is already exist!
+            Somthing error
           </Alert>
         </Snackbar>
       </div>

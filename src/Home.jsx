@@ -4,7 +4,7 @@ export function Home() {
   const [items, setItems] = useState(null);
 
   useEffect(() => {
-    fetch("https://backend-url-shortner.onrender.com/")
+    fetch("https://backend-url-shortner-kappa.vercel.app/urls")
       .then((data) => data.json())
       .then((crd) => setItems(crd));
   }, []);
@@ -16,7 +16,7 @@ function List({ items }) {
     const newCard = {
       fullurl: url,
     };
-    fetch("https://backend-url-shortner.onrender.com/add", {
+    fetch("https://backend-url-shortner-kappa.vercel.app/add", {
       method: "POST",
       body: JSON.stringify(newCard),
       headers: { "Content-Type": "application/json" },
@@ -26,7 +26,6 @@ function List({ items }) {
     window.open(url, "_blank");
     window.focus();
     location.reload();
-    console.log(url);
   };
   return (
     <div className="container home">
@@ -74,7 +73,7 @@ function List({ items }) {
                   <a
                     onClick={() =>
                       callurl(
-                        `https://backend-url-shortner.onrender.com/${e.shorturl}`
+                        `https://backend-url-shortner-kappa.vercel.app/VK/${e.shorturl}`
                       )
                     }
                     href="/home"
